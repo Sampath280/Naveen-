@@ -1,3 +1,9 @@
+The [Durable Functions](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview) extension introduces three trigger bindings that control the execution of orchestrator, entity, and activity functions.
+
+For your code I see only Activity function refer to this [git](https://github.com/Sampath280/Naveen-/blob/main/README.md) for full with token retrieval in Durable functions.
+
+
+
 I have used this [doc](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-bindings?tabs=python-v2%2Cin-process%2C2x-durable-functions&pivots=programming-language-javascript) as a reference for sample code to pass and handle parameters from the body.
 
  We have to extract input parameter from the orchestration context
