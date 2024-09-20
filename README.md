@@ -1,3 +1,5 @@
+
+
 ```js
 const { app } = require('@azure/functions');
 const df = require('durable-functions');
@@ -85,3 +87,9 @@ app.http('startReportOrchestrator', {
 });
 
 ```
+
+**Output:**
+
+
+
+<img width="722" alt="image" src="https://github.com/user-attachments/assets/bbf29496-1d0e-4d5f-8c73-9a49cbf7ac49">
