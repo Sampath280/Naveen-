@@ -1,3 +1,87 @@
+**For  retrieving a token in Durable functions refer to this code:**
+
+```
+const { app } = require('@azure/functions');
+const df = require('durable-functions');
+
+df.app.orchestration('reportOrchestrator', function* (context) {
+    try {
+      
+        const instanceId = context.df.instanceId;
+        context.log(`Orchestration instance ID: ${instanceId}`);
+        const token = yield context.df.callActivity('TokenManager', { instanceID: instanceId });
+
+        context.log(`Token retrieved: ${token}`);
+
+        return token;
+
+    } catch (error) {
+        context.log(`Error in orchestration: ${error.message}`);
+        throw error;  
+    }
+});
+
+df.app.activity('TokenManager', {
+    handler: async (input, context) => {
+        const log = context.log;
+        const instanceID = input.instanceID;  
+
+        if (!instanceID) {
+            throw new Error("InstanceID is missing or undefined.");
+        }
+
+        log(`Orchestrator Instance ID is ${instanceID}`);
+
+        const logicAppURL = "<Your Logic App URL>"; 
+       // let functionID = "POST Reports Orchestrator";
+
+        try {
+            
+            const tokenResponse = await axios.post(logicAppURL, {
+               // requestType: "GET_TOKEN",
+               // functionID: functionID,
+            });
+
+           
+            if (tokenResponse.data && tokenResponse.data.token) {
+                log("Token successfully retrieved");
+                return tokenResponse.data.token;
+            } else {
+                log("Token could not be retrieved. Returning an empty token.");
+                return "";  
+            }
+
+        } catch (error) {
+            log(`Error retrieving token: ${error.message}`);
+            throw error;  
+        }
+    }
+});
+
+app.http('startReportOrchestrator', {
+    route: 'orchestrators/{orchestratorName}',
+    extraInputs: [df.input.durableClient()],
+    handler: async (request, context) => {
+        const client = df.getClient(context);
+
+        const body = await request.json();
+       
+        const instanceId = await client.startNew(request.params.orchestratorName, undefined, body);
+
+        context.log(`Started orchestration with ID = '${instanceId}'.`);
+        return client.createCheckStatusResponse(request, instanceId);
+    },
+});
+
+
+```
+
+
+
+**For parameters refer to these steps below:**
+
+
+
 The [Durable Functions](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview) extension introduces three trigger bindings that control the execution of orchestrator, entity, and activity functions.
 
 For your code I see only Activity function refer to this [git](https://github.com/Sampath280/Naveen-/blob/main/README.md) for full with token retrieval in Durable functions.
